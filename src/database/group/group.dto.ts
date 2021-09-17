@@ -1,4 +1,10 @@
-export interface CreateGroupDto {
+type Participant = {
   name: string;
-  participants?: [];
+  redCard: number;
+  yellowCard: number;
+};
+
+export interface GroupDto {
+  name: string;
+  participants?: Participant[] | [];
 }

@@ -4,7 +4,7 @@ import { CommandsNames } from './enums/comands.enum';
 import { StickersEnum } from '../bot/enums/stickers.enum';
 import { MessagesService } from '../messages/messages.service';
 import { GroupService } from '../database/group/group.service';
-import { CreateGroupDto } from '../database/group/group.dto';
+import { GroupDto } from '../database/group/group.dto';
 
 interface ICommandMapping {
   command: CommandsNames;
@@ -14,14 +14,14 @@ type CommandsMapType = ICommandMapping[];
 
 @Injectable()
 export class CommandsService {
-  private commandsMaping: CommandsMapType;
+  private commandsMapping: CommandsMapType;
 
   constructor(
     private actionEmitter: ActionEmitterService,
     private messageService: MessagesService,
-    private groupServie: GroupService,
+    private groupService: GroupService,
   ) {
-    this.commandsMaping = [
+    this.commandsMapping = [
       { command: CommandsNames.start, action: this.start.bind(this) },
       {
         command: CommandsNames.yellow,
@@ -38,7 +38,7 @@ export class CommandsService {
   }
 
   private handleSubscribeActions() {
-    this.commandsMaping.forEach((commandLink) => {
+    this.commandsMapping.forEach((commandLink) => {
       this.actionEmitter.subscribe(commandLink.command, commandLink.action);
     });
   }
@@ -57,14 +57,16 @@ export class CommandsService {
   }
 
   public async start(ctx) {
-    const GroupDto: CreateGroupDto = {
+    const GroupDto: GroupDto = {
       name: ctx.message.chat.title,
     };
 
-    const group = await this.groupServie.createGroup(GroupDto);
+    const group = await this.groupService.createGroup(GroupDto);
+
+    console.log(group);
 
     if (!group) {
-      ctx.reply('Эй, да уже давно все стартануло, че ты стартуешь?');
+      ctx.reply('Эй, да уже давно все есть, че ты стартуешь?');
     } else {
       ctx.reply(
         'Внимание! Ваш чат теперь под строгим надзором HumorJudgeBot! Шутите с осторожность.',
