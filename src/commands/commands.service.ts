@@ -49,7 +49,8 @@ export class CommandsService {
     if (
       first_name.includes('Bot') ||
       first_name.includes('_Bot') ||
-      first_name.includes('_bot')
+      first_name.includes('_bot') ||
+      first_name.includes('рефери')
     ) {
       await ctx.reply('Своих не осуждаем');
       return true;
