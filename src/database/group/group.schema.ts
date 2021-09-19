@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Participant } from './group.dto';
 
 export type GroupDocument = Group & Document;
 
@@ -9,7 +10,7 @@ export class Group {
   name: string;
 
   @Prop({ default: [] })
-  participants: [];
+  participants: Participant[];
 }
 
 export const GroupSchema = SchemaFactory.createForClass(Group);

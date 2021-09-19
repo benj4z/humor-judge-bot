@@ -6,9 +6,6 @@ import { CommandsModule } from './commands/commands.module';
 import { ActionEmitterModule } from './action-emitter/action-emitter.module';
 import { MessagesModule } from './messages/messages.module';
 import { GroupModule } from './database/group/group.module';
-import { ParticipantsModule } from './database/participants/participants/participants.module';
-import { ParticipantsModule } from './database/participants/participants.module';
-import { ParticipantsModule } from './database/participants/participants/participants.module';
 
 @Module({
   imports: [
@@ -23,7 +20,6 @@ import { ParticipantsModule } from './database/participants/participants/partici
     ActionEmitterModule,
     MessagesModule,
     GroupModule,
-    ParticipantsModule,
   ],
   controllers: [],
 })

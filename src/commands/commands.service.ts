@@ -56,6 +56,15 @@ export class CommandsService {
     }
   }
 
+  private async stickerForReply(command) {
+    switch (command) {
+      case CommandsNames.red:
+        return StickersEnum.red;
+      case CommandsNames.yellow:
+        return StickersEnum.yellow;
+    }
+  }
+
   public async start(ctx) {
     const GroupDto: GroupDto = {
       name: ctx.message.chat.title,
@@ -75,7 +84,6 @@ export class CommandsService {
   }
 
   public async cardCommands(ctx) {
-    console.log(ctx);
     if (!ctx.message.reply_to_message) {
       return await ctx.reply('Шо, а кто сказал эту мерзость?');
     }
@@ -83,16 +91,44 @@ export class CommandsService {
     const isBot = await this.botReplyProtector(ctx);
 
     if (!isBot) {
+      const participant = {
+        id: ctx.message.reply_to_message.from.id,
+        name: `${ctx.message.reply_to_message.from.first_name} ${ctx.message.reply_to_message.from.last_name}`,
+      };
+
+      await this.groupService.updateParticipants(
+        ctx.message.chat.title,
+        participant,
+        ctx.command,
+      );
+
       const message = this.messageService.getMessage(ctx.command);
 
       await ctx.reply(message, {
         reply_to_message_id: ctx.message.reply_to_message.message_id,
       });
-      await ctx.replyWithSticker(StickersEnum.yellow);
+      const sticker = await this.stickerForReply(ctx.command);
+      await ctx.replyWithSticker(sticker);
     }
   }
 
-  public stats(ctx) {
-    ctx.reply('А вот и все шутники:');
+  public async stats(ctx) {
+    const participants = await this.groupService.getAllGroupParticipants(
+      ctx.message.chat.title,
+    );
+
+    if (participants.length > 0) {
+      let stringParticipants = '';
+
+      participants.forEach((item) => {
+        stringParticipants += `${item.name}: yellow - ${item.yellowCard}, red - ${item.redCard} \n`;
+      });
+
+      ctx.reply(`
+      А вот и все шутники: \n${stringParticipants}
+      `);
+    } else {
+      ctx.reply('Вы молодцы, плохих шутников не найдено!');
+    }
   }
 }
